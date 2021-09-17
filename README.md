@@ -1,0 +1,2 @@
+# SiteGen
+Static Site Generator
