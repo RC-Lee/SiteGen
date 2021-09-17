@@ -26,7 +26,7 @@ Current release 0.1 with the following features.
 Note, this release has not yet been published on npm.
 
 In terminal or console, head to the main sitegen directory and call
-`npm -install -g`
+`npm install -g`
 
 ----
 ### Version option example

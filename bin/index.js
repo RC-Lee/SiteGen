@@ -104,7 +104,7 @@ function createFile(filepath){
     reader = fs.createReadStream(filepath);
     reader.on('data', (chunk)=>{
         let content = htmlContent(chunk.toString(), filename);
-        fs.writeFileSync(outputPath+"/"+filename+".html", content, (err)=>{
+        fs.writeFileSync(outputPath+"/"+filename.replace(/\s+/g, '_')+".html", content, (err)=>{
             if(err) throw err;
         });
     });
@@ -145,8 +145,8 @@ function htmlContent(data, filename){
     }
     else if(Array.isArray(data)){
         data.forEach(ele =>{
-            if(ele)
-                htmlContent += `\n\t\t<h2>\n\t\t\t<a href="./${ele}.html">${ele}</a>\n\t\t</h2>`;
+            if(typeof ele === 'string')
+                htmlContent += `\n\t\t<h2>\n\t\t\t<a href="./${ele.replace(/\s+/g, '_')}.html">${ele}</a>\n\t\t</h2>`;
         });
     }
     
@@ -164,7 +164,7 @@ function findInDir(filepath, extension){
         if(stat.isDirectory()){
             results = results.concat(findInDir(filename, extension));
         }
-        else if(filename.indexOf(extension) >=0){
+        else if(filename.endsWith(extension)){
             results.push(filename);
         }
     } 
