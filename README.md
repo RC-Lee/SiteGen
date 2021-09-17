@@ -24,11 +24,12 @@ Current release 0.1 with the following features.
 
 ## How to use
 Note, this release has not yet been published on npm.
-In terminal/console head to the main sitegen directory and call
+
+In terminal or console, head to the main sitegen directory and call
 `npm -install -g`
 
 
-### version option example
+### Version option example
 `sitegen -v` or `sitegen --version` will display the tool name and current version.
 ```
   Name:  sitegen
@@ -36,14 +37,15 @@ In terminal/console head to the main sitegen directory and call
 ```
 
 
-### help option example
+### Help option example
 `sitegen -h` or `sitegen --help` will list the tool options as listed above.
 
 
-### input option examples
+### Input option examples
 ```
  sitegen -i filename
  sitegen --input "directory name"
+ sitegen -i relative-or-absolute-path-to-file-or-directory
 ```
 This is the main processing option for the site generator tool.
 
@@ -52,6 +54,17 @@ The file or directory name must follow the input option.
 In the case of spaces in file or directory names, quotation marks "" are needed to wrap around the name.
 
 
+### Output and Stylesheet option examples
+Sample code for using output and stylesheet options below:
+```
+ sitegen -i filename -o relative-or-absolute-path-directory
+ sitegen -i filename -s "stylesheet url"
+ sitegen -i filename -o relative-or-absolute-path-directory -s "stylesheet url"
+ sitegen -s "stylesheet url" -i filename -o relative-or-absolute-path-directory 
+```
+The order for using options doesn't matter, **but** the file, directory or url has to follow the used option.
+
+In the case that an output directory isn't indicated or valid, the generator will create files in a default ./dist folder in the current working directory.
 
 
 
