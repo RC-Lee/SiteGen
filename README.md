@@ -28,7 +28,7 @@ Note, this release has not yet been published on npm.
 In terminal or console, head to the main sitegen directory and call
 `npm -install -g`
 
-
+----
 ### Version option example
 `sitegen -v` or `sitegen --version` will display the tool name and current version.
 ```
@@ -36,11 +36,11 @@ In terminal or console, head to the main sitegen directory and call
   Version:  0.1.0
 ```
 
-
+----
 ### Help option example
 `sitegen -h` or `sitegen --help` will list the tool options as listed above.
 
-
+----
 ### Input option examples
 ```
  sitegen -i filename
@@ -53,7 +53,7 @@ The file or directory name must follow the input option.
 
 In the case of spaces in file or directory names, quotation marks "" are needed to wrap around the name.
 
-
+----
 ### Output and Stylesheet option examples
 Sample code for using output and stylesheet options below:
 ```
@@ -65,6 +65,10 @@ Sample code for using output and stylesheet options below:
 The order for using options doesn't matter, **but** the file, directory or url has to follow the used option.
 
 In the case that an output directory isn't indicated or valid, the generator will create files in a default ./dist folder in the current working directory.
+
+----
+## Generated Pages live example
+[Link to the example webpage](https://rclee91.github.io/SiteGen/)
 
 
 
