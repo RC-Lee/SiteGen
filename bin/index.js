@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 //path to current directory for dist folder
-const dist = "\\dist";
+const dist = process.cwd() + "/dist";
 let outputPath = dist;
 
 //tool options
@@ -123,7 +123,7 @@ function htmlContent(data, filename){
             lines.shift();
         }
     } else{
-        title = "Index";
+        title = "Generated Pages";
     }
     
     //Forming html with indents
