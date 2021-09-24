@@ -17,6 +17,8 @@ const options =[
     {"long_option":"--help", "short_option":"-h", "description":"Lists all available options"},
 ]
 
+const extensions = [".txt"];
+
 let m_args = process.argv.slice(2);
 let fileInd = 1;
 let stylesheetUrl = "";
@@ -73,19 +75,22 @@ function processInput(){
                 fs.rmdir(outputPath, {recursive: true, force: true}, (err)=>{
                     if(err) throw err;
 
-                    //Create new output diretory
+                    //Create new output directory
                     fs.mkdirSync(outputPath, {recursive: true});
                     
                     //Check if the input is a file or a directory
+
                     let fStats = fs.statSync(m_args[fileInd]);
                     if(fStats.isFile()){
-                        createFile(m_args[fileInd]);
+                        extensions.forEach(extension =>{
+                            if(m_args[fileInd].endsWith(extension));
+                            createFile(m_args[fileInd], extension);
+                        });
+                        
                     } else if (fStats.isDirectory()){
-                        let files = findInDir(m_args[fileInd], ".txt");
                         let fileNames = [];
-                        files.forEach(element => {
-                            fileNames.push(path.basename(element, '.txt'));
-                            createFile(element);
+                        extensions.forEach(extension => {
+                            fileNames = fileNames.concat(processDirectory(extension));
                         });
                         let indexContent = htmlContent(fileNames, "index");
                         fs.writeFileSync(outputPath+"/"+"index.html", indexContent, (err)=>{
@@ -98,16 +103,28 @@ function processInput(){
     }
 }
 
-//Creates a single html file
-function createFile(filepath){
-    let filename = path.basename(filepath, '.txt');
-    reader = fs.createReadStream(filepath);
-    reader.on('data', (chunk)=>{
-        let content = htmlContent(chunk.toString(), filename);
-        fs.writeFileSync(outputPath+"/"+filename.replace(/\s+/g, '_')+".html", content, (err)=>{
-            if(err) throw err;
-        });
+function processDirectory(extension){
+    let files = findInDir(m_args[fileInd], extension);
+    let fileNames = [];
+    files.forEach(file => {
+        fileNames.push(path.basename(file, extension));
+        createFile(file, extension);
     });
+    return fileNames;
+}
+
+//Creates a single html file
+function createFile(filepath, extension){
+    if(filepath.endsWith(extension)){
+        let filename = path.basename(filepath, extension);
+        reader = fs.createReadStream(filepath);
+        reader.on('data', (chunk)=>{
+            let content = htmlContent(chunk.toString(), filename);
+            fs.writeFileSync(outputPath+"/"+filename.replace(/\s+/g, '_')+".html", content, (err)=>{
+                if(err) throw err;
+            });
+        });
+    }
 }
 
 
@@ -143,6 +160,7 @@ function htmlContent(data, filename){
             htmlContent += `\n\t\t<p>${ele}</p>`
         });
     }
+    // if data is an array, creating index.js
     else if(Array.isArray(data)){
         data.forEach(ele =>{
             if(typeof ele === 'string')
@@ -164,8 +182,9 @@ function findInDir(filepath, extension){
         if(stat.isDirectory()){
             results = results.concat(findInDir(filename, extension));
         }
-        else if(filename.endsWith(extension)){
-            results.push(filename);
+        else{
+            if(filename.endsWith(extension))
+                results.push(filename);
         }
     } 
     return results;
