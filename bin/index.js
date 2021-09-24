@@ -3,9 +3,10 @@
 const pkjson = require('../package.json');
 const fs = require('fs');
 const path = require('path');
+const { Transform } = require('stream');
 
 //path to current directory for dist folder
-const dist = process.cwd() + "/dist";
+const dist = path.join(process.cwd(), "dist");
 let outputPath = dist;
 
 //tool options
@@ -79,7 +80,6 @@ function processInput(){
                     fs.mkdirSync(outputPath, {recursive: true});
                     
                     //Check if the input is a file or a directory
-
                     let fStats = fs.statSync(m_args[fileInd]);
                     if(fStats.isFile()){
                         extensions.forEach(extension =>{
@@ -92,8 +92,9 @@ function processInput(){
                         extensions.forEach(extension => {
                             fileNames = fileNames.concat(processDirectory(extension));
                         });
+                        // Creating index.js for files
                         let indexContent = htmlContent(fileNames, "index");
-                        fs.writeFileSync(outputPath+"/"+"index.html", indexContent, (err)=>{
+                        fs.writeFileSync(path.join(outputPath,"index.html"), indexContent, (err)=>{
                             if(err) throw err;
                         })
                     }
@@ -118,15 +119,23 @@ function createFile(filepath, extension){
     if(filepath.endsWith(extension)){
         let filename = path.basename(filepath, extension);
         reader = fs.createReadStream(filepath);
-        reader.on('data', (chunk)=>{
-            let content = htmlContent(chunk.toString(), filename);
-            fs.writeFileSync(outputPath+"/"+filename.replace(/\s+/g, '_')+".html", content, (err)=>{
-                if(err) throw err;
-            });
+        ws = fs.createWriteStream(path.join(outputPath, filename.replace(/\s+/g, '_')+".html"));
+        const toHtmlStream = new Transform({
+            objectMode: true,
+            transform(chunk, encoding, callback){
+                if(chunk.toString().length === 0){
+                    return callback();
+                }
+                else{
+                    this.push(htmlContent(chunk.toString(), filename));
+                    return callback();
+                }
+            }
         });
+
+        reader.pipe(toHtmlStream).pipe(ws);
     }
 }
-
 
 //Creates html content
 function htmlContent(data, filename){
