@@ -17,7 +17,7 @@ let stylesheetUrl = "";
 
 const program = new Command();
 program
-    .version(pkjson.version, '-v, --version', 'output the current version')
+    .version(pkjson.version, '-v, --version', 'Output the current version')
     .requiredOption('-i, --input <file or directory', 'Designate an input file or directory')
     .option('-o, --output <directory>', 'Designate an ouput directory', dist)
     .option('-s, --stylesheet <stylesheet url>', 'Link to a stylesheet url', '')
@@ -25,6 +25,7 @@ program
 program.parse(process.argv);
 
 const options = program.opts();
+//Output option
 if(options.output !== dist){
     if(fs.existsSync(options.output)){
         outputPath = options.output;
@@ -33,27 +34,40 @@ if(options.output !== dist){
         console.log(`Output directory "${options.output}" doesn't exist, outputting all files to ./dist`);
     }
 }
-if(options.stylesheet !== ''){
+//Stylesheet option
+if(options.stylesheet !== '')
     stylesheetUrl = options.stylesheet;
-}
-if(options.input !== undefined){
+//Input option
+if(options.input !== undefined)
     processInput(options.input);
-}
 
-//Checks validity of input file or directory
+/*
+  Function processes the input option
+
+  Parameters: 
+  filepath - string: filepath of input file or directory
+*/
 function processInput(filepath){
+    //Check to see if the file or directory exists
     if(!fs.existsSync(filepath)){
-        console.log(`Input file or directory ${filepath} doesn't exist.`);
+        console.error(`Input file or directory ${filepath} doesn't exist.`);
+        process.exit(-1);
     }
     else
     {
+        //Check for read access to file or directory
         fs.access(filepath, fs.constants.R_OK, (err)=>{
-            if(err)
-                console.log(`Can't access file or directory ${filepath}`);
+            if(err){
+                console.error(`Can't access file or directory ${filepath}`);
+                process.exit(-1);
+            }
             else{
                 //Remove old output directory
                 fs.rmdir(outputPath, {recursive: true, force: true}, (err)=>{
-                    if(err) throw err;
+                    if(err){
+                        console.error(`Error removing directory at "${outputPath}`);
+                        process.exit(-1);
+                    }
 
                     //Create new output directory
                     fs.mkdirSync(outputPath, {recursive: true});
@@ -63,8 +77,8 @@ function processInput(filepath){
                     //if the input is a file
                     if(fStats.isFile()){
                         extensions.forEach(extension =>{
-                            if(filepath.endsWith(extension));
-                            createFile(filepath, extension);
+                            if(filepath.endsWith(extension))
+                                createFile(filepath, extension);
                         });
                     //if the file is a directory
                     } else if (fStats.isDirectory()){
@@ -76,17 +90,28 @@ function processInput(filepath){
                         // Creating index.js for files
                         let indexContent = htmlContent(fileNames, "index", ".html");
                         fs.writeFileSync(path.join(outputPath,"index.html"), indexContent, (err)=>{
-                            if(err) throw err;
+                            if(err){
+                                console.error(`Error creating index.html file`);
+                                process.exit(-1);
+                            }
                         })
                     }
-                });
+                });//end of fs.rmdir
             }
-        });
+        });//end of fs.access
     }
 }
 
-//Creates html files from all files within the tree of directories ending with extension.
-//Returns an array of filenames of files within the tree of directories ending with extension.
+/*
+  Function Creates html files from all files within the tree of directories ending with extension.
+
+  Parameters:
+  filepath - string: filepath of file or directory
+  extension - string: extension of files to parse to html
+
+  Return:
+  fileNames - array<String>: array of filenames parsed to html.
+*/
 function processFiles(filepath, extension){
     let files = findInDir(filepath, extension);
     let fileNames = [];
@@ -97,7 +122,13 @@ function processFiles(filepath, extension){
     return fileNames;
 }
 
-//Creates a single html file
+/*
+  Function creates a single html file
+
+  Parameters:
+  filepath - string: filepath of file or directory
+  extension - string: extension of files to parse to html
+*/
 function createFile(filepath, extension){
     if(filepath.endsWith(extension)){
         let filename = path.basename(filepath, extension);
@@ -120,12 +151,22 @@ function createFile(filepath, extension){
     }
 }
 
-//Creates html content
+/*
+  Function gets the htmlContent to be written into html files
+
+  Parameters:
+  data - string/array<string>: Data to be processed for html files
+  filename - string: name of file
+  extension - string: extension of files to parse to html
+
+  Return:
+  htmlContent - string: content string to be written into files
+*/
 function htmlContent(data, filename, extension){
     let title = "";
     let bodyContent = "";
 
-    //Creating html files from extensions
+    //Processing files ending with extensions in the extensions array
     if(extension != ".html") {
         let lines = data.split(/\r?\n\r?\n/g);
         let splitTitle = data.split(/\r?\n\r?\n\r?\n/);
@@ -164,6 +205,16 @@ function htmlContent(data, filename, extension){
     return htmlContent;
 }
 
+/*
+  Function finds all files ending with extension in a tree of directories
+
+  Parameters:
+  filepath - string: filepath of file or directory
+  extension - string: extension of files to parse to html
+
+  Return:
+  results - array<string>: array consisting all filepaths of files ending with extension in a tree of directories
+*/
 function findInDir(filepath, extension){
     let results =[];
     let files=fs.readdirSync(filepath);
