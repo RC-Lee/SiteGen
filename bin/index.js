@@ -115,10 +115,13 @@ function processInput(filepath){
 function processFiles(filepath, extension){
     let files = findInDir(filepath, extension);
     let fileNames = [];
-    files.forEach(file => {
-        fileNames.push(path.basename(file, extension));
-        createFile(file, extension);
-    });
+    if(Array.isArray(files)){
+        files.forEach(file => {
+            fileNames.push(path.basename(file, extension));
+            createFile(file, extension);
+        });
+    }
+
     return fileNames;
 }
 
@@ -147,7 +150,28 @@ function createFile(filepath, extension){
             }
         });
 
+        //Piping data
         rs.pipe(toHtmlStream).pipe(ws);
+
+        //Error handling
+        rs.on("error", (err) =>{
+            console.error(`ReadStream encountered an error: ${err}`);
+            process.exit(-1);
+        });
+        ws.on("error", (err) =>{
+            console.error(`WriteStream encountered an error: ${err}`);
+            ws.end();
+            process.exit(-1);
+        });
+        toHtmlStream.on('error', (err) =>{
+            console.error(`toHtmlStream encountered an error: ${err}`);
+            process.exit(-1);
+        });
+                
+        //Ending
+        rs.on('end', () =>{});
+        ws.end();
+        toHtmlStream.end();
     }
 }
 
