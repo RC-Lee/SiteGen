@@ -28,6 +28,9 @@ Note, this release has not yet been published on npm.
 In terminal or console, head to the main sitegen directory and call
 `npm install -g`
 
+### Dependencies
+Commander: `npm install commander`
+
 ----
 ### Version option example
 `sitegen -v` or `sitegen --version` will display the tool name and current version.
