@@ -188,7 +188,7 @@ function htmlContent(data, filename, extension){
     let bodyContent = "";
 
     //Processing files ending with extensions in the extensions array
-    if(typeof data === "string" && extension == ".txt") {
+    if (typeof data === "string" && extension == ".txt") {
         let lines = data.split(/\r?\n\r?\n\r?\n/);
         if(lines.length > 1){
             title = lines[0];
@@ -226,19 +226,17 @@ function htmlContent(data, filename, extension){
 }
 
 // Creates Markdown content
-function markdownContent(data, filename) {
-    /*
+/*
     Function creates Markdown content for the html file. 
     Added support for the following features. 
     
     Parameters
     data - string: text data from .md file
-    filename - string: name of the file 
 
     Returns
     html - string: content of the html file
     */
-    console.log(filename)
+function markdownContent(data) {
     // Using replace method on string & regular expression 
     const convertedText = data
         .replace(/^# (.*$)/gim, '<h1>$1</h1>') // Heading 1 
