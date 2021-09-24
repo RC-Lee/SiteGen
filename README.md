@@ -88,6 +88,15 @@ The tool supports Markdown (.md) files.
 ***bold and italic text***
 ```
 
+| Markdown syntax | HTML equivalent |
+| ------------ | -------- |
+|Header 1|`<h1>Test</h1>`| 
+|Header 2| `<h2>Test</h2>`|
+|Header 3| `<h3>Test</h3>`|
+|Bold| `<b>Test</b>`|
+|Italic| `<i>Test</i>`|
+|Link | `<a href='URL'>Test</a>`|
+
 ----
 ## Generated Pages live example
 [Link to the example webpage](https://rclee91.github.io/SiteGen/)
