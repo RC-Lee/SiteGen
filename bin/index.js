@@ -4,73 +4,52 @@ const pkjson = require('../package.json');
 const fs = require('fs');
 const path = require('path');
 const { Transform } = require('stream');
+const { Command } = require('commander');
+
+const extensions = [".txt"];
 
 //path to current directory for dist folder
 const dist = path.join(process.cwd(), "dist");
 let outputPath = dist;
 
-//tool options
-const options =[
-    {"long_option":"--version", "short_option":"-v", "args":"", "description":"Displays tool name and current version"},
-    {"long_option":"--input", "short_option":"-i", "args":"<file or directory>", "description":"Designate an input file or directory"},
-    {"long_option":"--output", "short_option":"-o", "args":"<directory>",  "description":"Designate an output directory, default ./dist"},
-    {"long_option":"--stylesheet", "short_option":"-s", "args":"stylesheet URL",  "description":"Link a stylesheet URL"},
-    {"long_option":"--help", "short_option":"-h", "description":"Lists all available options"},
-]
-
-const extensions = [".txt"];
-
-let m_args = process.argv.slice(2);
-let fileInd = 1;
+//stylesheet url
 let stylesheetUrl = "";
 
-//determine and process options
-switch(m_args[0]){
-    case '--version':
-    case '-v':
-        console.log(' Name: ', pkjson.name);
-        console.log(' Version: ', pkjson.version);
-        break;
-    case '--input':
-    case '-i':
-        checkArgs() //checks output and stylesheet options
-        .then(()=>{
-            processInput();
-        }).catch((err)=>{console.log(err)});
-        break;
-    case '--help':
-    case '-h':
-        console.log(`Displaying tool options: `)
-        options.forEach(option=>{
-            console.log(`  ${option.short_option}, ${(option.long_option + " " + (option.args ? option.args : "")).padEnd(35, ' ')}  ${option.description}`);
-        })
-        break;
-    default:
-        let inputInd = m_args.findIndex(ele => ele == '--input' || ele == '-i');
-        if(inputInd == -1){
-            console.log("Unknown command, type --help or -h for command options");
-        }else{
-            fileInd = inputInd + 1;
-            checkArgs().then(()=>{
-                processInput();
-            }).catch((err)=>{console.log(err)});
-        }
-        
+const program = new Command();
+program
+    .version(pkjson.version, '-v, --version', 'output the current version')
+    .requiredOption('-i, --input <file or directory', 'Designate an input file or directory')
+    .option('-o, --output <directory>', 'Designate an ouput directory', dist)
+    .option('-s, --stylesheet <stylesheet url>', 'Link to a stylesheet url', '')
+    .showHelpAfterError();
+program.parse(process.argv);
+
+const options = program.opts();
+if(options.output !== dist){
+    if(fs.existsSync(options.output)){
+        outputPath = options.output;
+    }
+    else{
+        console.log(`Output directory "${options.output}" doesn't exist, outputting all files to ./dist`);
+    }
+}
+if(options.stylesheet !== ''){
+    stylesheetUrl = options.stylesheet;
+}
+if(options.input !== undefined){
+    processInput(options.input);
 }
 
 //Checks validity of input file or directory
-function processInput(){
-    if(!m_args[fileInd]){
-        console.log("Input file or directory name required");
-    } 
-    else if(!fs.existsSync(m_args[fileInd])){
-        console.log(`Input file or directory ${m_args[fileInd]} doesn't exist.`);
+function processInput(filepath){
+    if(!fs.existsSync(filepath)){
+        console.log(`Input file or directory ${filepath} doesn't exist.`);
     }
     else
     {
-        fs.access(m_args[1], fs.constants.R_OK, (err)=>{
+        fs.access(filepath, fs.constants.R_OK, (err)=>{
             if(err)
-                console.log(`Can't access file or directory ${m_args[fileInd]}`);
+                console.log(`Can't access file or directory ${filepath}`);
             else{
                 //Remove old output directory
                 fs.rmdir(outputPath, {recursive: true, force: true}, (err)=>{
@@ -80,18 +59,20 @@ function processInput(){
                     fs.mkdirSync(outputPath, {recursive: true});
                     
                     //Check if the input is a file or a directory
-                    let fStats = fs.statSync(m_args[fileInd]);
+                    let fStats = fs.statSync(filepath);
+                    //if the input is a file
                     if(fStats.isFile()){
                         extensions.forEach(extension =>{
-                            if(m_args[fileInd].endsWith(extension));
-                            createFile(m_args[fileInd], extension);
+                            if(filepath.endsWith(extension));
+                            createFile(filepath, extension);
                         });
-                        
+                    //if the file is a directory
                     } else if (fStats.isDirectory()){
                         let fileNames = [];
                         extensions.forEach(extension => {
-                            fileNames = fileNames.concat(processDirectory(extension));
+                            fileNames = fileNames.concat(processFiles(filepath, extension));
                         });
+
                         // Creating index.js for files
                         let indexContent = htmlContent(fileNames, "index");
                         fs.writeFileSync(path.join(outputPath,"index.html"), indexContent, (err)=>{
@@ -104,8 +85,10 @@ function processInput(){
     }
 }
 
-function processDirectory(extension){
-    let files = findInDir(m_args[fileInd], extension);
+//Creates html files from all files within the tree of directories ending with extension.
+//Returns an array of filenames of files within the tree of directories ending with extension.
+function processFiles(filepath, extension){
+    let files = findInDir(filepath, extension);
     let fileNames = [];
     files.forEach(file => {
         fileNames.push(path.basename(file, extension));
@@ -188,6 +171,8 @@ function findInDir(filepath, extension){
     for(let i = 0; i < files.length; ++i){
         let filename = path.join(filepath,files[i]);
         let stat = fs.lstatSync(filename);
+
+        //recursively find all files ending with extension
         if(stat.isDirectory()){
             results = results.concat(findInDir(filename, extension));
         }
@@ -197,39 +182,4 @@ function findInDir(filepath, extension){
         }
     } 
     return results;
-}
-
-//checks arguments for output or stylsheet options
-function checkArgs(){
-    return new Promise((res, rej) =>{
-        let outputInd = m_args.findIndex(ele => (ele == '--output' || ele == '-o'));
-        let styleInd = m_args.findIndex(ele => (ele == '--stylesheet' || ele == '-s'));
-
-        //if --output or -o options exist
-        if(outputInd != -1){
-            // argument after the options should be the designated output directory
-            let outDirInd = outputInd + 1;
-            if(m_args[outDirInd]){
-                if(fs.existsSync(m_args[outDirInd])){
-                    outputPath = m_args[outDirInd];
-                }
-                else{
-                    console.log(`Output directory ${m_args[outDirInd]} doesn't exist, outputting all files to ./dist`);
-                }
-            }
-        }
-
-        //if stylesheet option exists
-        if(styleInd != -1){
-            // argument after the option should be the stylesheet url
-            let styleUrlInd = styleInd + 1;
-            if(m_args[styleUrlInd]){
-                stylesheetUrl = m_args[styleUrlInd];
-            }
-            else{
-                console.log(`Stylesheet url doesn't exist, using default stylesheet`);
-            }
-        }
-        res();
-    });
 }
