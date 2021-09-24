@@ -6,7 +6,7 @@ const path = require('path');
 const { Transform } = require('stream');
 const { Command } = require('commander');
 
-const extensions = [".txt"];
+const extensions = [".txt", ".md"];
 
 //path to current directory for dist folder
 const dist = path.join(process.cwd(), "dist");
@@ -171,6 +171,7 @@ function createFile(filepath, extension){
     }
 }
 
+
 /*
   Function gets the htmlContent to be written into html files
 
@@ -187,14 +188,17 @@ function htmlContent(data, filename, extension){
     let bodyContent = "";
 
     //Processing files ending with extensions in the extensions array
-    if(typeof data === "string" && extension != ".html") {
+    if(typeof data === "string" && extension == ".txt") {
         let lines = data.split(/\r?\n\r?\n\r?\n/);
         if(lines.length > 1){
             title = lines[0];
             lines.shift();
         }
         bodyContent += lines[0].split(/\r?\n\r?\n/g).map(line => `\r\n\t\t<p>${line}</p>`).join("\n");
-    } else{ //Creating index.html
+    } else if(typeof data == "string" && extension == ".md") {
+        bodyContent = markdownContent(data, filename)
+    }
+    else{ //Creating index.html
         title = "Generated Pages";
         if(Array.isArray(data)){
             data.forEach(filename =>{
@@ -219,6 +223,33 @@ function htmlContent(data, filename, extension){
                         '\r\n\t</body>\r\n</html>';
 
     return htmlContent;
+}
+
+// Creates Markdown content
+function markdownContent(data, filename) {
+    /*
+    Function creates Markdown content for the html file. 
+    Added support for the following features. 
+    
+    Parameters
+    data - string: text data from .md file
+    filename - string: name of the file 
+
+    Returns
+    html - string: content of the html file
+    */
+    console.log(filename)
+    // Using replace method on string & regular expression 
+    const convertedText = data
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>') // Heading 1 
+		.replace(/^### (.*$)/gim, '<h3>$1</h3>') // Heading 3 
+		.replace(/^## (.*$)/gim, '<h2>$1</h2>') // Heading 2
+		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // Bold
+		.replace(/\*(.*)\*/gim, '<i>$1</i>') // Italic
+        .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>") // Link 
+		.replace(/\n$/gim, '<br />') // Break line
+
+    return convertedText
 }
 
 /*
