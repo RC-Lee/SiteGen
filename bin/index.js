@@ -26,7 +26,7 @@ program.parse(process.argv);
 
 const options = program.opts();
 //Output option
-if(options.output !== dist){
+if(options.output !== undefined){
     if(fs.existsSync(options.output)){
         outputPath = options.output;
     }
@@ -50,7 +50,7 @@ if(options.input !== undefined)
 function processInput(filepath){
     //Check to see if the file or directory exists
     if(!fs.existsSync(filepath)){
-        console.error(`Input file or directory ${filepath} doesn't exist.`);
+        console.error(`Input file or directory "${filepath}" doesn't exist.`);
         process.exit(-1);
     }
     else
@@ -94,7 +94,7 @@ function processInput(filepath){
                                 console.error(`Error creating index.html file`);
                                 process.exit(-1);
                             }
-                        })
+                        });
                     }
                 });//end of fs.rmdir
             }
@@ -132,8 +132,8 @@ function processFiles(filepath, extension){
 function createFile(filepath, extension){
     if(filepath.endsWith(extension)){
         let filename = path.basename(filepath, extension);
-        reader = fs.createReadStream(filepath);
-        ws = fs.createWriteStream(path.join(outputPath, filename.replace(/\s+/g, '_')+".html"));
+        let rs = fs.createReadStream(filepath);
+        let ws = fs.createWriteStream(path.join(outputPath, filename.replace(/\s+/g, '_')+".html"));
         const toHtmlStream = new Transform({
             objectMode: true,
             transform(chunk, encoding, callback){
@@ -147,7 +147,7 @@ function createFile(filepath, extension){
             }
         });
 
-        reader.pipe(toHtmlStream).pipe(ws);
+        rs.pipe(toHtmlStream).pipe(ws);
     }
 }
 
@@ -167,40 +167,36 @@ function htmlContent(data, filename, extension){
     let bodyContent = "";
 
     //Processing files ending with extensions in the extensions array
-    if(extension != ".html") {
-        let lines = data.split(/\r?\n\r?\n/g);
-        let splitTitle = data.split(/\r?\n\r?\n\r?\n/);
-        if(splitTitle.length > 1){
-            title = splitTitle[0];
+    if(typeof data === "string" && extension != ".html") {
+        let lines = data.split(/\r?\n\r?\n\r?\n/);
+        if(lines.length > 1){
+            title = lines[0];
             lines.shift();
         }
-        if(lines.length > 1)
-            lines.map((line) =>{
-                bodyContent += `\n\t\t<p>${line}</p>`
-            });
+        bodyContent += lines[0].split(/\r?\n\r?\n/g).map(line => `\r\n\t\t<p>${line}</p>`).join("\n");
     } else{ //Creating index.html
         title = "Generated Pages";
         if(Array.isArray(data)){
             data.forEach(filename =>{
                 if(typeof filename === 'string')
-                    bodyContent += `\n\t\t<h2>\n\t\t\t<a href="./${filename.replace(/\s+/g, '_')}.html">${filename}</a>\n\t\t</h2>`;
+                    bodyContent += `\r\n\t\t<h2>\r\n\t\t\t<a href="./${filename.replace(/\s+/g, '_')}.html">${filename}</a>\r\n\t\t</h2>`;
             });
         }
     }
     
     //Forming html with indents
     let htmlContent = '<!doctype html>'+
-                        '\n\t<html lang="en">'+
-                        '\n\t<head>' +
-                        '\n\t\t<meta charset="utf-8">' +
-                        `\n\t\t<title>${title != "" ? title : filename}</title>` +
-                        `\n\t\t<meta name="viewport" content="width=device-width, initial-scale=1">`+
-                        `${stylesheetUrl != "" ? `\n\t\t<link href="${stylesheetUrl}" rel="stylesheet">` : ""}` +
-                        '\n\t</head>'+
-                        '\n\t<body>' +
-                        `${title != "" ? `<h1>${title}</h1>`: ""}`+
+                        '\r\n\t<html lang="en">'+
+                        '\r\n\t<head>' +
+                        '\r\n\t\t<meta charset="utf-8">' +
+                        `\r\n\t\t<title>${title != "" ? title : filename}</title>` +
+                        `\r\n\t\t<meta name="viewport" content="width=device-width, initial-scale=1">`+
+                        `${stylesheetUrl != "" ? `\r\n\t\t<link href="${stylesheetUrl}" rel="stylesheet">` : ""}` +
+                        '\r\n\t</head>'+
+                        '\r\n\t<body>' +
+                        `${title != "" ? `\r\n\t\t<h1>${title}</h1>`: ""}`+
                         `${bodyContent}`+
-                        '\n\t</body>\n</html>';
+                        '\r\n\t</body>\r\n</html>';
 
     return htmlContent;
 }
