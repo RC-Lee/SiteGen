@@ -74,7 +74,7 @@ function processInput(filepath){
                         });
 
                         // Creating index.js for files
-                        let indexContent = htmlContent(fileNames, "index");
+                        let indexContent = htmlContent(fileNames, "index", ".html");
                         fs.writeFileSync(path.join(outputPath,"index.html"), indexContent, (err)=>{
                             if(err) throw err;
                         })
@@ -110,7 +110,7 @@ function createFile(filepath, extension){
                     return callback();
                 }
                 else{
-                    this.push(htmlContent(chunk.toString(), filename));
+                    this.push(htmlContent(chunk.toString(), filename, extension));
                     return callback();
                 }
             }
@@ -121,18 +121,30 @@ function createFile(filepath, extension){
 }
 
 //Creates html content
-function htmlContent(data, filename){
+function htmlContent(data, filename, extension){
     let title = "";
-    let lines = [];
-    if(typeof data === 'string'){
-        lines = data.split(/\r?\n\r?\n/);
-        let splitTitle = data.substr(0, 50).split(/\r?\n\r?\n\r?\n/);
+    let bodyContent = "";
+
+    //Creating html files from extensions
+    if(extension != ".html") {
+        let lines = data.split(/\r?\n\r?\n/g);
+        let splitTitle = data.split(/\r?\n\r?\n\r?\n/);
         if(splitTitle.length > 1){
             title = splitTitle[0];
             lines.shift();
         }
-    } else{
+        if(lines.length > 1)
+            lines.map((line) =>{
+                bodyContent += `\n\t\t<p>${line}</p>`
+            });
+    } else{ //Creating index.html
         title = "Generated Pages";
+        if(Array.isArray(data)){
+            data.forEach(filename =>{
+                if(typeof filename === 'string')
+                    bodyContent += `\n\t\t<h2>\n\t\t\t<a href="./${filename.replace(/\s+/g, '_')}.html">${filename}</a>\n\t\t</h2>`;
+            });
+        }
     }
     
     //Forming html with indents
@@ -142,25 +154,12 @@ function htmlContent(data, filename){
                         '\n\t\t<meta charset="utf-8">' +
                         `\n\t\t<title>${title != "" ? title : filename}</title>` +
                         `\n\t\t<meta name="viewport" content="width=device-width, initial-scale=1">`+
-                        `${stylesheetUrl != "" ? `\n\t\t<link href=${stylesheetUrl} rel="stylesheet">` : ""}` +
+                        `${stylesheetUrl != "" ? `\n\t\t<link href="${stylesheetUrl}" rel="stylesheet">` : ""}` +
                         '\n\t</head>'+
                         '\n\t<body>' +
-                        `${title != "" ? `<h1>${title}</h1>`: ""}`;
-
-    if(lines.length > 0){
-        lines.forEach(ele =>{
-            htmlContent += `\n\t\t<p>${ele}</p>`
-        });
-    }
-    // if data is an array, creating index.js
-    else if(Array.isArray(data)){
-        data.forEach(ele =>{
-            if(typeof ele === 'string')
-                htmlContent += `\n\t\t<h2>\n\t\t\t<a href="./${ele.replace(/\s+/g, '_')}.html">${ele}</a>\n\t\t</h2>`;
-        });
-    }
-    
-    htmlContent += '\n\t</body>\n</html>';
+                        `${title != "" ? `<h1>${title}</h1>`: ""}`+
+                        `${bodyContent}`+
+                        '\n\t</body>\n</html>';
 
     return htmlContent;
 }
