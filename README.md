@@ -11,7 +11,7 @@ Current release 0.1 with the following features.
  - Allows specification of a different output directory
  - Allows specification of a stylesheet through linking a stylesheet URL
  - Automatically generates an index.html file with relative links to each of the generated html files
-
+ - Markdown support: header(1,2,3), link, bold text, italic text
 
 ## Tool options
 ```
@@ -65,6 +65,28 @@ Sample code for using output and stylesheet options below:
 The order for using options doesn't matter, **but** the file, directory or url has to follow the used option.
 
 In the case that an output directory isn't indicated or valid, the generator will create files in a default ./dist folder in the current working directory.
+
+----
+## Markdown 
+The tool supports Markdown (.md) files. 
+### Headers
+```
+# H1 
+## H2
+## H3
+```
+### Links
+```
+[I'm an inline-style link](https://github.com)
+```
+### Bold & Italic
+```
+**bold text**
+
+**italic text**
+
+***bold and italic text***
+```
 
 ----
 ## Generated Pages live example
