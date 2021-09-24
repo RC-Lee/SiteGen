@@ -135,38 +135,39 @@ function processFiles(filepath, extension){
 function createFile(filepath, extension){
     if(filepath.endsWith(extension)){
         let filename = path.basename(filepath, extension);
-        let rs = fs.createReadStream(filepath);
-        let ws = fs.createWriteStream(path.join(outputPath, filename.replace(/\s+/g, '_')+".html"));
-        const toHtmlStream = new Transform({
-            objectMode: true,
-            transform(chunk, encoding, callback){
-                if(chunk.toString().length === 0){
-                    return callback();
-                }
-                else{
-                    this.push(htmlContent(chunk.toString(), filename, extension));
-                    return callback();
-                }
-            }
-        });
 
-        //Piping data
-        rs.pipe(toHtmlStream).pipe(ws);
-
-        //Error handling
+        const rs = fs.createReadStream(filepath);
+        rs.setEncoding("utf8");
+        rs.on("data", () =>{});
+        rs.on("end", ()=>{});
         rs.on("error", (err) =>{
             console.error(`ReadStream encountered an error: ${err}`);
             process.exit(-1);
         });
+
+        let ws = fs.createWriteStream(path.join(outputPath, filename.replace(/\s+/g, '_')+".html"));
+        ws.on("finish", ()=>{});
         ws.on("error", (err) =>{
             console.error(`WriteStream encountered an error: ${err}`);
             ws.end();
             process.exit(-1);
         });
+
+        const toHtmlStream = new Transform({
+            objectMode: true,
+            transform(chunk, encoding, callback){
+                this.push(htmlContent(chunk.toString(), filename, extension));
+                return callback();
+            },
+        });
+
         toHtmlStream.on('error', (err) =>{
             console.error(`toHtmlStream encountered an error: ${err}`);
             process.exit(-1);
         });
+
+        //Piping data
+        rs.pipe(toHtmlStream).pipe(ws);
     }
 }
 
