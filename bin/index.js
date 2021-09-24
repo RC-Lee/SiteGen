@@ -167,11 +167,6 @@ function createFile(filepath, extension){
             console.error(`toHtmlStream encountered an error: ${err}`);
             process.exit(-1);
         });
-                
-        //Ending
-        rs.on('end', () =>{});
-        ws.end();
-        toHtmlStream.end();
     }
 }
 
