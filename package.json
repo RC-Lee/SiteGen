@@ -18,5 +18,8 @@
   "homepage": "https://github.com/rclee91/SiteGen#readme",
   "bin": {
     "sitegen": "./bin/index.js"
+  },
+  "dependencies": {
+    "commander": "^8.2.0"
   }
 }
