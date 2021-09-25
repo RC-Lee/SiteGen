@@ -243,7 +243,9 @@ function markdownContent(data) {
 		.replace(/^### (.*$)/gim, '<h3>$1</h3>') // Heading 3 
 		.replace(/^## (.*$)/gim, '<h2>$1</h2>') // Heading 2
 		.replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // Bold
-		.replace(/\*(.*)\*/gim, '<i>$1</i>') // Italic
+        .replace(/\*(.*)\*/gim, '<i>$1</i>') // Italic
+        .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // Bold nested in Italic
+        .replace(/\*(.*)\*/gim, '<i>$1</i>') // Italic nested in Bold
         .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>") // Link 
 		.replace(/\n$/gim, '<br />') // Break line
 
