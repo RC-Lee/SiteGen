@@ -17,7 +17,7 @@ let stylesheetUrl = "";
 
 const program = new Command();
 program
-    .version(pkjson.version, '-v, --version', 'Output the current version')
+    .version(`Name: ${pkjson.name} \nVersion: ${pkjson.version}`, '-v, --version', 'Output the current version')
     .requiredOption('-i, --input <file or directory', 'Designate an input file or directory')
     .option('-o, --output <directory>', 'Designate an ouput directory', dist)
     .option('-s, --stylesheet <stylesheet url>', 'Link to a stylesheet url', '')
@@ -26,7 +26,7 @@ program.parse(process.argv);
 
 const options = program.opts();
 //Output option
-if(options.output !== undefined){
+if(options.output !== dist){
     if(fs.existsSync(options.output)){
         outputPath = options.output;
     }
