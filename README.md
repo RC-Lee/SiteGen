@@ -11,7 +11,7 @@ Current release 0.1 with the following features.
  - Allows specification of a different output directory
  - Allows specification of a stylesheet through linking a stylesheet URL
  - Automatically generates an index.html file with relative links to each of the generated html files
- - Markdown support: header(1,2,3), link, bold text, italic text, inline code
+ - Markdown support: header(1,2,3), link, bold text, italic text, inline code, horizontal rule
 
 ## Tool options
 ```
@@ -94,6 +94,10 @@ The tool supports Markdown (.md) files.
 ```
 `This is an inline code`
 ```
+### Horizontal Rule
+```
+Three or more "---"
+```
 
 | Markdown syntax | HTML equivalent |
 | ------------ | -------- |
@@ -104,6 +108,7 @@ The tool supports Markdown (.md) files.
 |Italic| `<i>Test</i>`|
 |Link | `<a href='URL'>Test</a>`|
 |Inline Code | `<code>Test</code>`|
+|Horizontal Rule | `<hr>` |
 
 ----
 ## Generated Pages live example

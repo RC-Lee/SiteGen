@@ -248,6 +248,7 @@ function markdownContent(data) {
         .replace(/\*(.*)\*/gim, '<i>$1</i>') // Italic nested in Bold
         .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>") // Link 
         .replace(/`(.*?)`/gim, '<code>$1</code>') //inline code
+        .replace(/-{3,}$/gim, '<hr>') // Horizontal Rule
 		.replace(/\n$/gim, '<br />') // Break line
 
     return convertedText
