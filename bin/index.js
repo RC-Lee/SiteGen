@@ -35,11 +35,12 @@ if(options.config !== undefined) {
             value || value.length > 0 ? options[`${key}`] = `${value}` : options[`${key}`] = undefined;
         }
         if(!options.input) {
-            console.log(`error: input <file or directory> is not specified in config file ${options.config}`);
+            console.error(`error: input <file or directory> is not specified in config file ${options.config}`);
             process.exit(-1);
         }
     } catch(error) {
         console.error(`Can't read or parse config file ${options.config}\n ${error}`);
+        process.exit(-1);
     }
 }
 //Output option
