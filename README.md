@@ -12,6 +12,7 @@ Current release 0.1 with the following features.
  - Allows specification of a stylesheet through linking a stylesheet URL
  - Automatically generates an index.html file with relative links to each of the generated html files
  - Markdown support: header(1,2,3), link, bold text, italic text, inline code, horizontal rule
+ - Config JSON file cotaining SSG options support
 
 ## Tool options
 ```
@@ -19,6 +20,7 @@ Current release 0.1 with the following features.
   -i, --input <file or directory name>       Designate an input file or directory
   -o, --output <directory name>              Designate an output directory, default ./dist
   -s, --stylesheet <stylesheet URL>          Link a stylesheet URL to the html
+  -c, --config <file>                        Read and parse json properties from file as options.
   -h, --help                                 Lists all available options
 ```
 
@@ -111,6 +113,29 @@ Three or more "---"
 |Horizontal Rule | `<hr>` |
 
 ----
+## Config file: 
+
+The tool support `.json` config file
+
+### Usage
+
+```sh
+sitegen -c config.json
+```
+
+Reading and parsing json properties as options for `sitegen`
+**Note**: if `-c` exists, other options are be ignored. 
+
+### Example.json 
+```json
+{
+  "input": "./testfiles",
+  "output": "./output",
+  "stylesheet": "https://cdn.jsdelivr.net/npm/water.css@2/out/water.css",
+  "lang": "en"
+}
+```
+
 ## Generated Pages live example
 [Link to the example webpage](https://rclee91.github.io/SiteGen/)
 
