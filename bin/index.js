@@ -1,12 +1,10 @@
 #! /usr/bin/env node
-
-const pkjson = require('../package.json');
-const fs = require('fs');
-const path = require('path');
-const { Command } = require('commander');
-const { Data } = require('./data')
-
 function processOptions(){
+    const pkjson = require('../package.json');
+    const fs = require('fs');
+    const path = require('path');
+    const { Command } = require('commander');
+    const { Data } = require('./data')
     const dist = path.join(process.cwd(), "dist");
     const program = new Command();
     program

@@ -8,7 +8,7 @@ class Data{
     stylesheetUrl_;
     extensions = [".txt", ".md"];
 
-    constructor(inputPath, outputPath, stylesheetUrl){
+    constructor(inputPath, outputPath, stylesheetUrl = ""){
         if(!fs.existsSync(inputPath)){
             console.error(`Input file or directory "${inputPath}" doesn't exist.`);
             process.exit(-1);
@@ -29,7 +29,7 @@ class Data{
             }
             else{
                 //Remove old output directory
-                fs.rmdir(this.outputPath_, {recursive: true, force: true}, (err)=>{
+                fs.rm(this.outputPath_, {recursive: true, force: true}, (err)=>{
                     if(err){
                         console.error(`Error removing directory at "${this.outputPath_}`);
                         process.exit(-1);
@@ -44,8 +44,7 @@ class Data{
                     if(fStats.isFile()){
                         this.extensions.forEach(extension =>{
                             if(this.inputPath_.endsWith(extension)){
-                                let tempFile = new File(this.inputPath_, extension);
-                                this.createFile(tempFile);
+                                this.createFile(new File(this.inputPath_, extension));
                             }
                         });
                     //if the file is a directory
@@ -56,7 +55,7 @@ class Data{
                         });
 
                         // Creating index.js for files
-                        let indexContent = this.CreateIndexHtml(fileNames);
+                        let indexContent = this.createIndexHtml(fileNames);
                         fs.writeFileSync(path.join(this.outputPath_,"index.html"), indexContent, (err)=>{
                             if(err){
                                 console.error(`Error creating index.html file`);
@@ -79,13 +78,12 @@ class Data{
     fileNames - array<String>: array of filenames parsed to html.
     */
     processFiles(extension){
-        let files = this.findInDir(this.inputPath_, extension);
+        let files = this.recursiveFindFiles(this.inputPath_, extension);
         let fileNames = [];
         if(Array.isArray(files)){
             files.forEach(file => {
                 fileNames.push(path.basename(file, extension));
-                let tempFile = new File(file, extension);
-                this.createFile(tempFile);
+                this.createFile(new File(file, extension));
             });
         }
     
@@ -102,7 +100,7 @@ class Data{
     Return:
     results - array<string>: array consisting all filepaths of files ending with extension in a tree of directories
     */
-    findInDir(filepath, extension){
+    recursiveFindFiles(filepath, extension){
         let results =[];
         let files=fs.readdirSync(filepath);
         for(let i = 0; i < files.length; ++i){
@@ -111,7 +109,7 @@ class Data{
     
             //recursively find all files ending with extension
             if(stat.isDirectory()){
-                results = results.concat(findInDir(filename, extension));
+                results = results.concat(this.recursiveFindFiles(filename, extension));
             }
             else{
                 if(filename.endsWith(extension))
@@ -143,7 +141,7 @@ class Data{
         let toHtmlStream = new Transform({
             objectMode: true,
             transform(chunk, encoding, callback){
-                this.push(file.toHtml(chunk.toString()), stylesheetUrl);
+                this.push(file.toHtml(chunk.toString(), stylesheetUrl));
                 return callback();
             },
         });
@@ -156,7 +154,7 @@ class Data{
         readStream.pipe(toHtmlStream).pipe(writeStream);
     }
 
-    CreateIndexHtml(filenames){
+    createIndexHtml(filenames){
         let title = "Generated Pages"
         let bodyContent = "";
     
@@ -186,9 +184,7 @@ class File{
         this.extension_ = extension;
     }
 
-    getFilePath(){
-        return this.filePath_;
-    }
+    getFilePath(){return this.filePath_;}
 
     /*
     Method gets the htmlContent to be written into html files
@@ -204,15 +200,18 @@ class File{
         let title = "";
         let bodyContent = "";
         //Processing files ending with extensions in the extensions array
-        if (typeof data === "string" && this.extension_ == ".txt") {
+        if (this.extension_ == ".txt") {
             let lines = data.split(/\r?\n\r?\n\r?\n/);
             if(lines.length > 1){
                 title = lines[0];
                 lines.shift();
             }
             bodyContent += lines[0].split(/\r?\n\r?\n/g).map(line => `\r\n\t\t<p>${line}</p>`).join("\n");
-        } else if(typeof data == "string" && this.extension_ == ".md") {
+        } else if(this.extension_ == ".md") {
             bodyContent = this.markdownContent(data);
+        } else{
+            console.error(`error: ${this.extension_} is not a file type that can be processed`);
+            process.exit(-1);
         }
 
         return getHtmlContent(title, stylesheetUrl, bodyContent);
@@ -231,9 +230,9 @@ class File{
             .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>") // Link 
             .replace(/`(.*?)`/gim, '<code>$1</code>') //inline code
             .replace(/-{3,}$/gim, '<hr>') // Horizontal Rule
-            .replace(/\n$/gim, '<br />') // Break line
+            .replace(/\n$/gim, '<br />'); // Break line
     
-        return convertedText
+        return convertedText;
     }
 }
 
