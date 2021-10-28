@@ -1,6 +1,7 @@
 const { Transform } = require('stream');
 const fs = require('fs');
 const path = require('path');
+const { Remarkable } = require('remarkable');
 
 class Data{
     inputPath_;
@@ -218,21 +219,10 @@ class File{
     }
     
     markdownContent(data) {
-        // Using replace method on string & regular expression 
-        let convertedText = data
-            .replace(/^# (.*$)/gim, '<h1>$1</h1>') // Heading 1 
-            .replace(/^### (.*$)/gim, '<h3>$1</h3>') // Heading 3 
-            .replace(/^## (.*$)/gim, '<h2>$1</h2>') // Heading 2
-            .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // Bold
-            .replace(/\*(.*)\*/gim, '<i>$1</i>') // Italic
-            .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>') // Bold nested in Italic
-            .replace(/\*(.*)\*/gim, '<i>$1</i>') // Italic nested in Bold
-            .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>") // Link 
-            .replace(/`(.*?)`/gim, '<code>$1</code>') //inline code
-            .replace(/-{3,}$/gim, '<hr>') // Horizontal Rule
-            .replace(/\n$/gim, '<br />'); // Break line
-    
-        return convertedText;
+        const md = new Remarkable('full', {
+            html: true
+        });
+        return md.render(data);
     }
 }
 

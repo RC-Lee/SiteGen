@@ -20,6 +20,7 @@
     "sitegen": "./bin/index.js"
   },
   "dependencies": {
-    "commander": "^8.2.0"
+    "commander": "^8.2.0",
+    "remarkable": "^2.0.1"
   }
 }
