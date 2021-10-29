@@ -172,6 +172,14 @@ class File{
     filePath_ = "";
     extension_ = "";
     fileName_ = "";
+    metaData = {
+        id: '', 
+        title: '', 
+        hide_title: false, 
+        description: '', 
+        stylesheet: '',
+        image: ''
+    };
 
     constructor(filePath, extension){
         if(filePath.endsWith(extension))
@@ -219,10 +227,63 @@ class File{
     }
     
     markdownContent(data) {
+        let separated = this.separateFrontMatter(data);
+        this.parseFrontMatter(separated[0]);
+        let bodyContent = this.changeMetaDataInMd(separated[1]);
         const md = new Remarkable('full', {
             html: true
         });
-        return md.render(data);
+        return md.render(bodyContent);
+    }
+
+    separateFrontMatter(data){
+        if(data.startsWith("---")){
+            //there is meta data
+            let splitData = data.split('---', 3);
+            if(splitData.length != 3 || splitData[0] != ''){
+                console.error("error: metaData doesn't seem to be formatted correctly");
+            }
+            //Should add more parsing requirements,
+            //for example, if they forgot to add the second '---' after meta data
+            //and it shows up as a horizontal line later down the file,
+            //This would cause problems
+            
+            splitData.shift();
+            //splitData[1] is metaData
+            //splitData[2] is bodyData
+            return splitData;
+        }
+        else{
+            return ['', data];
+        }
+    }
+
+    parseFrontMatter(data){
+        //metaData = ['id', 'title', 'hide_title', 'description', 'stylesheet', 'image'];
+        let splitData = data.split(/\r?\n/);
+        splitData.map((line)=>{
+            if(line != ''){
+                let splitLine = line.split(': ', 2);
+                if(splitLine.length > 1 && this.metaData.hasOwnProperty(splitLine[0])){
+                    if(splitLine[0] === 'hide_title')
+                        this.metaData[splitLine[0]] = (splitLine[1] === true || splitLine[1] === false) ? splitLine[1] : false;
+                    else
+                        this.metaData[splitLine[0]] = splitLine[1];
+                }
+            }
+        });
+    }
+
+    changeMetaDataInMd(data){
+        for( let key in this.metaData){
+            if(this.metaData[key] != ''){
+                let regStr = ` {{ ${key} }}`;
+                let replacement = ` ${this.metaData[key]} `;
+                let re = new RegExp(regStr, "gim");
+                data = data.replace(re, replacement);
+            }
+        }
+        return data;
     }
 }
 
