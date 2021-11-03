@@ -4,7 +4,13 @@
   "description": "static site generator",
   "main": "bin/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prettier": "prettier --write \"./**/*.{md,js}\"",
+    "prettier-check": "prettier --check \"./**/*.{md,js}\"",
+    "eslint": "eslint --ignore-path .gitignore .",
+    "eslint-fix": "eslint --fix --ignore-path .gitignore .",
+    "lint": "npm run eslint",
+    "husky": "husky install"
   },
   "repository": {
     "type": "git",
@@ -22,5 +28,10 @@
   "dependencies": {
     "commander": "^8.2.0",
     "remarkable": "^2.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.1.0",
+    "husky": "^7.0.0",
+    "prettier": "2.4.1"
   }
 }

@@ -1,20 +1,27 @@
 # SiteGen
 
 ## About
-A basic Static Site Generator that converts .txt files to .html files. 
+
+A basic Static Site Generator that converts .txt files to .html files.
 Current release 0.1 with the following features.
 
 ## Features
- - (Required) Allows the user to specify an input file or folder to be processed.
- - Allows the input to be a deep tree of files and folders, all .txt files are recursively parsed.
- - Parsed titles (if any) from input files.
- - Allows specification of a different output directory
- - Allows specification of a stylesheet through linking a stylesheet URL
- - Automatically generates an index.html file with relative links to each of the generated html files
- - Markdown support: header(1,2,3), link, bold text, italic text, inline code, horizontal rule
- - Config JSON file cotaining SSG options support
+
+- (Required) Allows the user to specify an input file or folder to be processed.
+- Allows the input to be a deep tree of files and folders, all .txt files are recursively parsed.
+- Parsed titles (if any) from input files.
+- Allows specification of a different output directory
+- Allows specification of a stylesheet through linking a stylesheet URL
+- Automatically generates an index.html file with relative links to each of the generated html files
+- Markdown support: header(1,2,3), link, bold text, italic text, inline code, horizontal rule
+- Config JSON file cotaining SSG options support
+
+## Development
+
+Please read `CONTRIBUTING.md`
 
 ## Tool options
+
 ```
   -v, --version                              Displays tool name and current version
   -i, --input <file or directory name>       Designate an input file or directory
@@ -24,98 +31,67 @@ Current release 0.1 with the following features.
   -h, --help                                 Lists all available options
 ```
 
-## How to use
-Note, this release has not yet been published on npm.
+---
 
-In terminal or console, head to the main sitegen directory and call
-`npm install -g`
-
-### Dependencies
-Commander: `npm install commander`
-
-----
 ### Version option example
+
 `sitegen -v` or `sitegen --version` will display the tool name and current version.
+
 ```
   Name:  sitegen
   Version:  0.1.0
 ```
 
-----
+---
+
 ### Help option example
+
 `sitegen -h` or `sitegen --help` will list the tool options as listed above.
 
-----
+---
+
 ### Input option examples
+
 ```
  sitegen -i filename
  sitegen --input "directory name"
  sitegen -i relative-or-absolute-path-to-file-or-directory
 ```
+
 This is the main processing option for the site generator tool.
 
 The file or directory name must follow the input option.
 
 In the case of spaces in file or directory names, quotation marks "" are needed to wrap around the name.
 
-----
+---
+
 ### Output and Stylesheet option examples
+
 Sample code for using output and stylesheet options below:
+
 ```
  sitegen -i filename -o relative-or-absolute-path-directory
  sitegen -i filename -s "stylesheet url"
  sitegen -i filename -o relative-or-absolute-path-directory -s "stylesheet url"
- sitegen -s "stylesheet url" -i filename -o relative-or-absolute-path-directory 
+ sitegen -s "stylesheet url" -i filename -o relative-or-absolute-path-directory
 ```
+
 The order for using options doesn't matter, **but** the file, directory or url has to follow the used option.
 
 In the case that an output directory isn't indicated or valid, the generator will create files in a default ./dist folder in the current working directory.
 
-----
-## Markdown 
-The tool supports Markdown (.md) files. 
-### Headers
-```
-# H1 
-## H2
-## H3
-```
-### Links
-```
-[I'm an inline-style link](https://github.com)
-```
-### Bold & Italic
-```
-**bold text**
+---
 
-**italic text**
+## Markdown
 
-***bold and italic text***
-```
-### Inline Code
-```
-`This is an inline code`
-```
-### Horizontal Rule
-```
-Three or more "---"
-```
+The tool supports Markdown (.md) files with full Markdown support from Remarkable
 
-| Markdown syntax | HTML equivalent |
-| ------------ | -------- |
-|Header 1|`<h1>Test</h1>`| 
-|Header 2| `<h2>Test</h2>`|
-|Header 3| `<h3>Test</h3>`|
-|Bold| `<b>Test</b>`|
-|Italic| `<i>Test</i>`|
-|Link | `<a href='URL'>Test</a>`|
-|Inline Code | `<code>Test</code>`|
-|Horizontal Rule | `<hr>` |
+---
 
-----
-## Config file: 
+## Config file:
 
-The tool support `.json` config file
+The tool supports `.json` config file
 
 ### Usage
 
@@ -124,9 +100,10 @@ sitegen -c config.json
 ```
 
 Reading and parsing json properties as options for `sitegen`
-**Note**: if `-c` exists, other options are be ignored. 
+**Note**: if `-c` exists, other options are be ignored.
 
-### Example.json 
+### Example.json
+
 ```json
 {
   "input": "./testfiles",
@@ -136,9 +113,13 @@ Reading and parsing json properties as options for `sitegen`
 }
 ```
 
+---
+
+## Special thanks to
+
+[Andrei Batomunkuev](https://github.com/abatomunkuev) <br/>
+[Tue Nguyen](https://github.com/TueNguyen2911)
+
 ## Generated Pages live example
+
 [Link to the example webpage](https://rclee91.github.io/SiteGen/)
-
-
-
-
