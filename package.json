@@ -4,7 +4,8 @@
   "description": "static site generator",
   "main": "bin/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --",
+    "coverage": "jest --collectCoverage --",
     "prettier": "prettier --write \"./**/*.{md,js}\"",
     "prettier-check": "prettier --check \"./**/*.{md,js}\"",
     "eslint": "eslint --ignore-path .gitignore .",
@@ -31,7 +32,9 @@
   },
   "devDependencies": {
     "eslint": "^8.1.0",
+    "execa": "^5.1.1",
     "husky": "^7.0.0",
+    "jest": "^27.3.1",
     "prettier": "2.4.1"
   }
 }

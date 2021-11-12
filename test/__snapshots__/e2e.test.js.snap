@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`end-to-end integration prints error and help message when no arguments given 1`] = `
+"C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\options.js:16
+    throw new Error(\`error: required option input <file or directory> is not specified\`);
+    ^
+
+Error: error: required option input <file or directory> is not specified
+    at processOptions (C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\options.js:16:11)
+    at main (C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\index.js:34:3)
+    at Object.<anonymous> (C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\index.js:40:1)
+    at Module._compile (node:internal/modules/cjs/loader:1101:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
+    at Module.load (node:internal/modules/cjs/loader:981:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+    at node:internal/main/run_main_module:17:47"
+`;
+
+exports[`end-to-end integration prints help message when --help given 1`] = `
+"Usage: index [options]
+
+Options:
+  -v, --version                      Output the current version
+  -i, --input <file or directory>    Designate an input file or directory
+  -o, --output <directory>           Designate an ouput directory (default:
+                                     \\"C:\\\\\\\\Users\\\\\\\\Roxan\\\\\\\\Desktop\\\\\\\\OSD\\\\\\\\SiteGen\\\\\\\\dist\\")
+  -s, --stylesheet <stylesheet url>  Link to a stylesheet url (default:
+                                     \\"https://cdn.jsdelivr.net/npm/water.css@2/out/water.css\\")
+  -c, --config <config json file>    Link to file that specifies all SSG
+                                     options
+  -h, --help                         display help for command"
+`;
+
+exports[`end-to-end integration prints version message when --version given 1`] = `
+"Name: sitegen 
+Version: 0.1.0"
+`;
+
+exports[`end-to-end integration single valid text file input should generate an html 1`] = `""`;
+
+exports[`end-to-end integration single valid text file input with invalid output folder should generate an html in ./dist 1`] = `"Output directory ./test/invalid doesn't exist, outputting all files to ./dist"`;
+
+exports[`end-to-end integration single valid text file input with valid output folder should generate an html in said folder 1`] = `""`;

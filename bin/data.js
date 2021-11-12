@@ -1,7 +1,6 @@
-const { Transform } = require('stream');
 const fs = require('fs');
 const path = require('path');
-const { Remarkable } = require('remarkable');
+const { File, getHtmlContent } = require('./file');
 
 class Data {
   constructor(inputPath, outputPath, stylesheetUrl = '') {
@@ -65,6 +64,7 @@ class Data {
         }); //end of fs.rmdir
       }
     }); //end of fs.access
+    process.exitCode = 0;
   }
 
   /*
@@ -117,40 +117,10 @@ class Data {
   }
 
   createFile(file) {
-    let stylesheetUrl = this.stylesheetUrl_;
-    let readStream = fs.createReadStream(file.getFilePath());
-    readStream.setEncoding('utf8');
-    readStream.on('data', () => {});
-    readStream.on('end', () => {});
-    readStream.on('error', (err) => {
-      console.error(`ReadStream encountered an error: ${err}`);
-      process.exit(-1);
-    });
-
-    let writeStream = fs.createWriteStream(
-      path.join(this.outputPath_, file.fileName_.replace(/\s+/g, '_') + '.html')
-    );
-    writeStream.on('finish', () => {});
-    writeStream.on('error', (err) => {
-      console.error(`WriteStream encountered an error: ${err}`);
-      writeStream.end();
-      process.exit(-1);
-    });
-
-    let toHtmlStream = new Transform({
-      objectMode: true,
-      transform(chunk, encoding, callback) {
-        this.push(file.toHtml(chunk.toString(), stylesheetUrl));
-        return callback();
-      },
-    });
-    toHtmlStream.on('error', (err) => {
-      console.error(`toHtmlStream encountered an error: ${err}`);
-      process.exit(-1);
-    });
-
-    //Piping data
-    readStream.pipe(toHtmlStream).pipe(writeStream);
+    let data = fs.readFileSync(file.getFilePath(), 'utf-8');
+    let htmlContent = file.toHtml(data, this.stylesheetUrl_);
+    let newFilePath = path.join(this.outputPath_, file.fileName_.replace(/\s+/g, '_') + '.html');
+    fs.appendFileSync(newFilePath, htmlContent);
   }
 
   createIndexHtml(filenames) {
@@ -167,159 +137,6 @@ class Data {
 
     return getHtmlContent(title, this.stylesheetUrl_, bodyContent);
   }
-}
-
-class File {
-  constructor(filePath, extension) {
-    this.filePath_ = '';
-    this.extension_ = '';
-    this.fileName_ = '';
-    this.metaData = {
-      id: '',
-      title: '',
-      hide_title: false,
-      description: '',
-      stylesheet: '',
-      image: '',
-    };
-    if (filePath.endsWith(extension)) this.fileName_ = path.basename(filePath, extension);
-    else {
-      console.error(`error getting filename from file ${path}`);
-      process.exit(-1);
-    }
-
-    this.filePath_ = filePath;
-    this.extension_ = extension;
-  }
-
-  getFilePath() {
-    return this.filePath_;
-  }
-
-  /*
-    Method gets the htmlContent to be written into html files
-
-    Parameters:
-    data - string/array<string>: Data to be processed for html files
-    stylesheetUrl - <string> stylesheet Url
-
-    Return:
-    htmlContent - string: content string to be written into files
-    */
-  toHtml(data, stylesheetUrl = '') {
-    let title = '';
-    let bodyContent = '';
-    //Processing files ending with extensions in the extensions array
-    if (this.extension_ == '.txt') {
-      let lines = data.split(/\r?\n\r?\n\r?\n/);
-      if (lines.length > 1) {
-        title = lines[0];
-        lines.shift();
-      }
-      bodyContent += lines[0]
-        .split(/\r?\n\r?\n/g)
-        .map((line) => `\r\n\t\t<p>${line}</p>`)
-        .join('\n');
-    } else if (this.extension_ == '.md') {
-      bodyContent = this.markdownContent(data);
-    } else {
-      console.error(`error: ${this.extension_} is not a file type that can be processed`);
-      process.exit(-1);
-    }
-
-    return getHtmlContent(title, stylesheetUrl, bodyContent);
-  }
-
-  markdownContent(data) {
-    let separated = this.separateFrontMatter(data);
-    this.parseFrontMatter(separated[0]);
-    let bodyContent = this.changeMetaDataInMd(separated[1]);
-    const md = new Remarkable('full', {
-      html: true,
-    });
-    return md.render(bodyContent);
-  }
-
-  separateFrontMatter(data) {
-    if (data.startsWith('---')) {
-      //there is meta data
-      let splitData = data.split('---', 3);
-      if (splitData.length != 3 || splitData[0] != '') {
-        console.error(`error: metaData doesn't seem to be formatted correctly`);
-      }
-      //Should add more parsing requirements,
-      //for example, if they forgot to add the second '---' after meta data
-      //and it shows up as a horizontal line later down the file,
-      //This would cause problems
-
-      splitData.shift();
-      //splitData[1] is metaData
-      //splitData[2] is bodyData
-      return splitData;
-    } else {
-      return ['', data];
-    }
-  }
-
-  parseFrontMatter(data) {
-    //metaData = ['id', 'title', 'hide_title', 'description', 'stylesheet', 'image'];
-    let splitData = data.split(/\r?\n/);
-    splitData.map((line) => {
-      if (line != '') {
-        let splitLine = line.split(': ', 2);
-        if (
-          splitLine.length > 1 &&
-          Object.prototype.hasOwnProperty.call(this.metaData, splitLine[0])
-        ) {
-          if (splitLine[0] === 'hide_title')
-            this.metaData[splitLine[0]] =
-              splitLine[1] === true || splitLine[1] === false ? splitLine[1] : false;
-          else this.metaData[splitLine[0]] = splitLine[1];
-        }
-      }
-    });
-  }
-
-  changeMetaDataInMd(data) {
-    for (let key in this.metaData) {
-      if (this.metaData[key] != '') {
-        let regStr = ` {{ ${key} }}`;
-        let replacement = ` ${this.metaData[key]} `;
-        let re = new RegExp(regStr, 'gim');
-        data = data.replace(re, replacement);
-      }
-    }
-    return data;
-  }
-}
-
-/*
-    Functions generates html block
-
-    Parameters:
-    title - <string>: html title
-    stylesheetUrl - <string> stylesheet Url
-    bodyContent - <string> html body
-
-    Return:
-    htmlContent - string: content string to be written into files
- */
-function getHtmlContent(title, stylesheetUrl, bodyContent) {
-  let htmlContent =
-    '<!doctype html>' +
-    '\r\n\t<html lang="en">' +
-    '\r\n\t<head>' +
-    '\r\n\t\t<meta charset="utf-8">' +
-    `\r\n\t\t<title>${title != '' ? title : ''}</title>` +
-    `\r\n\t\t<meta name="viewport" content="width=device-width, initial-scale=1">` +
-    `${stylesheetUrl != '' ? `\r\n\t\t<link href="${stylesheetUrl}" rel="stylesheet">` : ''}` +
-    '\r\n\t</head>' +
-    '\r\n\t<body>' +
-    `${title != '' ? `\r\n\t\t<h1>${title}</h1>` : ''}` +
-    `${bodyContent}` +
-    '\r\n\t</body>\r\n</html>';
-
-  return htmlContent;
 }
 
 module.exports.Data = Data;

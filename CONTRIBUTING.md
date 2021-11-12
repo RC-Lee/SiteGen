@@ -3,8 +3,21 @@
 Note, this release has not yet been published on npm.
 
 1. Fork and clone the forked repository
-2. In terminal or console, head to the main sitegen directory and call `npm install` to install all dependencies.
-3. Then call `npm install -g` to use `sitegen <command-optioon>` directly in the command line.
+2. In your cloned forked repository, create a new branch with easy to identify branch names. (e.g issue/number, fix/some-bug)
+3. In terminal or console, head to the main sitegen directory and call `npm install` to install all dependencies.
+4. Then call `npm install -g` to use `sitegen <command-option>` directly in the command line.
+5. Make changes and commits
+6. Rebase into a single commit
+7. Create pull request
+
+### Contributing to tests
+
+- Run coverage analysis to figure out which lines of code still needs tests
+- Follow the format to keep tests for functions/classes from the same file, in the same test file
+- If a test file or describe doesn't exist, please create a test file, and write a "describe" for individual function/class
+- Create tests. Tests should be small, don't worry about covering everything.
+- Run coverage to make sure coverage has improved and not gotten worse
+- For more specific information please read the [Jest Documentation](https://jestjs.io/docs/getting-started)
 
 ---
 
@@ -23,6 +36,8 @@ Remarkable: "^2.0.1"
 Prettier: "2.4.1"
 ESLint: "^8.1.0"
 Husky: "^7.0.0"
+Exca: "^5.1.1"
+Jest: "^27.3.1"
 
 ---
 
@@ -41,6 +56,11 @@ Husky pre-commit hook is set up so the scripts for `Prettier` and `ESLint` will 
    - `npm run eslint`: Undergo eslint checks
    - `npm run eslint-fix`: Auto fix with eslint
    - `npm run lint`: Undergo eslint checks
+3. Tests:
+   - `npm run test`: To run all available tests
+   - `npm run test <path-to-test-file>`: To run tests on a specific file
+   - `npm run coverage`: To get coverage information for all tests
+   - `npm run coverage <path-to-test-file>`: To run specific coverage for a test fil
 
 ---
 
@@ -57,3 +77,5 @@ Husky pre-commit hook is set up so the scripts for `Prettier` and `ESLint` will 
 - The `.vscode\settings.json` currently has it configured for `prettier` as the default format.
 - The editor will automatically format on save based on prettier code styles.
 - The editor has lint task for ESLint turned on, which will provide errors and warnings as the code is written.
+
+---

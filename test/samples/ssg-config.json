@@ -1,0 +1,6 @@
+{
+    "input": "../Sherlock",
+    "output": "./testDist2",
+    "stylesheet": "https://cdn.jsdelivr.net/npm/water.css@2/out/water.css",
+    "lang": "fr"
+}
