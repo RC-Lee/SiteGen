@@ -3,7 +3,7 @@ const { run } = require('./run');
 describe('end-to-end integration', () => {
   test('prints error and help message when no arguments given', async () => {
     const { stderr, stdout, exitCode } = await run();
-    let err = stderr.replace(/\(.*SiteGen/gim, '.');
+    let err = stderr.replace(/\(.*SiteGen/gim, '(.').replace(/^.*SiteGen/gim, '.');
     expect(exitCode === 0).toBeFalsy();
     expect(err).toMatchSnapshot();
     expect(stdout).toEqual('');

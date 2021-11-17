@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`end-to-end integration prints error and help message when no arguments given 1`] = `
-"C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\options.js:18
+".\\\\bin\\\\options.js:18
     throw new Error(\`error: required option input <file or directory> is not specified\`);
     ^
 
 Error: error: required option input <file or directory> is not specified
-    at processOptions .\\\\bin\\\\options.js:18:11)
-    at main .\\\\bin\\\\index.js:32:3)
-    at Object.<anonymous> .\\\\bin\\\\index.js:38:1)
+    at processOptions (.\\\\bin\\\\options.js:18:11)
+    at main (.\\\\bin\\\\index.js:32:3)
+    at Object.<anonymous> (.\\\\bin\\\\index.js:38:1)
     at Module._compile (node:internal/modules/cjs/loader:1101:14)
     at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
     at Module.load (node:internal/modules/cjs/loader:981:32)
