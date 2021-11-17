@@ -1,8 +1,6 @@
 const fs = require('fs');
-const path = require('path');
-const dist = path.join(process.cwd(), 'dist');
 
-function processOptions(options) {
+function processOptions(options, dist) {
   //Config file option
   if (options.config !== undefined && options.config !== '' && options.config !== null) {
     processConfig(options);
