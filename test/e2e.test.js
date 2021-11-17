@@ -3,9 +3,9 @@ const { run } = require('./run');
 describe('end-to-end integration', () => {
   test('prints error and help message when no arguments given', async () => {
     const { stderr, stdout, exitCode } = await run();
-    let err = stderr.replace(/\(.*SiteGen/gim, '(.').replace(/^.*SiteGen/gim, '.');
+    const errorMsg = 'error: required option input <file or directory> is not specified';
     expect(exitCode === 0).toBeFalsy();
-    expect(err).toMatchSnapshot();
+    expect(stderr.includes(errorMsg)).toBeTruthy();
     expect(stdout).toEqual('');
   });
 
