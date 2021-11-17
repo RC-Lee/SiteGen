@@ -24,7 +24,7 @@ describe('validOutput tests', () => {
   });
 
   test('a directory that does not exist should return false', () => {
-    ['notExist', '/path/to/output3/'].forEach((path) => expect(validOutput(path)).toBeTruthy());
+    ['notExist', '/path/to/output3/'].forEach((path) => expect(validOutput(path)).toBeFalsy());
   });
 });
 
