@@ -1,12 +1,10 @@
 #! /usr/bin/env node
 const pkjson = require('../package.json');
-const path = require('path');
 const { Command } = require('commander');
 const { processOptions } = require('./options');
 const { Data } = require('./data');
 
 function main() {
-  const dist = path.join(process.cwd(), 'dist');
   const program = new Command();
   program
     .version(
@@ -15,7 +13,7 @@ function main() {
       'Output the current version'
     )
     .option('-i, --input <file or directory>', 'Designate an input file or directory')
-    .option('-o, --output <directory>', 'Designate an ouput directory', dist)
+    .option('-o, --output <directory>', 'Designate an ouput directory')
     .option(
       '-s, --stylesheet <stylesheet url>',
       'Link to a stylesheet url',
@@ -31,7 +29,7 @@ function main() {
     stylesheet: programOpts.stylesheet,
     config: programOpts.config,
   };
-  processOptions(dataOptions, dist);
+  processOptions(dataOptions);
 
   let inputData = new Data(dataOptions.input, dataOptions.output, dataOptions.stylesheet);
   inputData.processInput();

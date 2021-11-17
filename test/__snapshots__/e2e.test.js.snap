@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`end-to-end integration prints error and help message when no arguments given 1`] = `
-"C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\options.js:16
+"C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\options.js:18
     throw new Error(\`error: required option input <file or directory> is not specified\`);
     ^
 
 Error: error: required option input <file or directory> is not specified
-    at processOptions (C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\options.js:16:11)
-    at main (C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\index.js:34:3)
-    at Object.<anonymous> (C:\\\\Users\\\\Roxan\\\\Desktop\\\\OSD\\\\SiteGen\\\\bin\\\\index.js:40:1)
+    at processOptions .\\\\bin\\\\options.js:18:11)
+    at main .\\\\bin\\\\index.js:32:3)
+    at Object.<anonymous> .\\\\bin\\\\index.js:38:1)
     at Module._compile (node:internal/modules/cjs/loader:1101:14)
     at Object.Module._extensions..js (node:internal/modules/cjs/loader:1153:10)
     at Module.load (node:internal/modules/cjs/loader:981:32)
@@ -23,8 +23,7 @@ exports[`end-to-end integration prints help message when --help given 1`] = `
 Options:
   -v, --version                      Output the current version
   -i, --input <file or directory>    Designate an input file or directory
-  -o, --output <directory>           Designate an ouput directory (default:
-                                     \\"C:\\\\\\\\Users\\\\\\\\Roxan\\\\\\\\Desktop\\\\\\\\OSD\\\\\\\\SiteGen\\\\\\\\dist\\")
+  -o, --output <directory>           Designate an ouput directory
   -s, --stylesheet <stylesheet url>  Link to a stylesheet url (default:
                                      \\"https://cdn.jsdelivr.net/npm/water.css@2/out/water.css\\")
   -c, --config <config json file>    Link to file that specifies all SSG
