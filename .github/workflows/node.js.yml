@@ -10,6 +10,19 @@ on:
     branches: [main]
 
 jobs:
+  eslint:
+    name: Run ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+      - name: Run ESLint
+        run: |
+          npm ci
+          npm run eslint
+
   build:
     runs-on: ubuntu-latest
 
