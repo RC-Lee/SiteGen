@@ -1,10 +1,12 @@
 #! /usr/bin/env node
 const pkjson = require('../package.json');
+const path = require('path');
 const { Command } = require('commander');
 const { processOptions } = require('./options');
 const { Data } = require('./data');
 
 function main() {
+  const dist = path.join(process.cwd(), 'dist');
   const program = new Command();
   program
     .version(
@@ -29,7 +31,7 @@ function main() {
     stylesheet: programOpts.stylesheet,
     config: programOpts.config,
   };
-  processOptions(dataOptions);
+  processOptions(dataOptions, dist);
 
   let inputData = new Data(dataOptions.input, dataOptions.output, dataOptions.stylesheet);
   inputData.processInput();
