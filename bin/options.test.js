@@ -14,7 +14,7 @@ describe('validOutput tests', () => {
   });
 
   test('empty, null, undefined should return false', () => {
-    [null, undefined, ''].forEach((path) => expect(validOutput(path)).toBe(false));
+    [null, undefined, ''].forEach((path) => expect(validOutput(path)).toBeFalsy());
   });
 
   test('a directory that exists should return true', () => {
@@ -24,7 +24,7 @@ describe('validOutput tests', () => {
   });
 
   test('a directory that does not exist should return false', () => {
-    ['notExist', '/path/to/output3/'].forEach((path) => expect(validOutput(path)).toBe(false));
+    ['notExist', '/path/to/output3/'].forEach((path) => expect(validOutput(path)).toBeFalsy());
   });
 });
 
