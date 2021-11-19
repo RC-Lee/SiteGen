@@ -30,6 +30,18 @@ describe('end-to-end integration', () => {
     expect(stderr).toEqual('');
   });
 
+  test('single valid text file input should generate an html', async () => {
+    const { stderr, stdout, exitCode } = await run(
+      '--input',
+      './test/sample.txt',
+      '--stylesheet',
+      'link'
+    );
+    expect(exitCode).toBe(0);
+    expect(stdout).toMatchSnapshot();
+    expect(stderr).toEqual('');
+  });
+
   test('single valid text file input with valid output folder should generate an html in said folder', async () => {
     const { stderr, stdout, exitCode } = await run(
       '--input',
