@@ -15,11 +15,13 @@ Options:
 `;
 
 exports[`end-to-end integration prints version message when --version given 1`] = `
-"Name: sitegen 
-Version: 0.1.0"
+"Name: osd-sitegen 
+Version: 1.0.0"
 `;
 
 exports[`end-to-end integration single valid text file input should generate an html 1`] = `""`;
+
+exports[`end-to-end integration single valid text file input should generate an html 2`] = `""`;
 
 exports[`end-to-end integration single valid text file input with invalid output folder should generate an html in ./dist 1`] = `"Output directory ./test/invalid doesn't exist, outputting all files to ./dist"`;
 

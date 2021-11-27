@@ -1,11 +1,13 @@
-## Setup
+## Thank you
 
-Note, this release has not yet been published on npm.
+Thank you for your interest in contributing. Please read carefully and notify me of any errors. Much appreciated.
+
+## Dev Setup
 
 1. Fork and clone the forked repository
 2. In your cloned forked repository, create a new branch with easy to identify branch names. (e.g issue/number, fix/some-bug)
 3. In terminal or console, head to the main sitegen directory and call `npm install` to install all dependencies.
-4. Then call `npm install -g` to use `sitegen <command-option>` directly in the command line.
+4. Then call `npm install -g` to use `osd-sitegen <command-option>` directly in the command line.
 5. Make changes and commits
 6. Rebase into a single commit
 7. Create pull request
@@ -66,7 +68,7 @@ Husky pre-commit hook is set up so the scripts for `Prettier` and `ESLint` will 
 
 ## VSCode recommendations and settings
 
-####Recommended Extensions:
+#### Recommended Extensions:
 
 - ESLint: `dbaeumer.vscode-eslint`
 - Prettier: `esbenp.prettier-vscode`
