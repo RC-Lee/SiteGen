@@ -1,6 +1,6 @@
 {
-  "name": "sitegen",
-  "version": "0.1.0",
+  "name": "osd-sitegen",
+  "version": "1.0.0",
   "description": "static site generator",
   "main": "bin/index.js",
   "scripts": {
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/rclee91/SiteGen#readme",
   "bin": {
-    "sitegen": "./bin/index.js"
+    "osd-sitegen": "./bin/index.js"
   },
   "dependencies": {
     "commander": "^8.2.0",

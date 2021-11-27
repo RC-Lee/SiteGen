@@ -2,27 +2,38 @@
 
 ## About
 
-A basic Static Site Generator that converts .txt files to .html files.
-Current release 0.1 with the following features.
+A basic Static Site Generator that converts `.txt` and `.md` files to `.html` files.
+Current release 1.0.0 on npm with the following features.
 
 ## Features
 
-- (Required) Allows the user to specify an input file or folder to be processed.
-- Allows the input to be a deep tree of files and folders, all .txt files are recursively parsed.
-- Parsed titles (if any) from input files.
-- Allows specification of a different output directory
+- Allows the user to specify an input file or input folder to be processed.
+- Allows the input to be a deep tree of files and folders, all `.txt` and `.md` files are recursively parsed.
+- Parsed titles (if any) from input `.txt` files.
+- Allows specification of a different output directory. If there's no directory specified, a `dist` folder will be created in the current working directory to store the generated `html` file(s).
 - Allows specification of a stylesheet through linking a stylesheet URL
 - Automatically generates an index.html file with relative links to each of the generated html files
-- Markdown support: header(1,2,3), link, bold text, italic text, inline code, horizontal rule
-- Config JSON file cotaining SSG options support
+- Markdown support: Full markdown support through [Remarkable](https://github.com/jonschlinkert/remarkable)
+- Supports parsing of config JSON files containing SSG options
 
 ## Development
 
-Please read `CONTRIBUTING.md`
+For interest in developments please read [`CONTRIBUTING.md`](./CONTRIBUTING.MD)
+
+## Installation
+
+1. Make sure you have [npm](https://www.npmjs.com/) installed
+2. run in terminal or command line
+
+```sh
+npm install -g osd-sitegen
+```
+
+Head to any directory you wish for the default `/dist` folder to be generated in, then run the tool options below.
 
 ## Tool options
 
-```
+```sh
   -v, --version                              Displays tool name and current version
   -i, --input <file or directory name>       Designate an input file or directory
   -o, --output <directory name>              Designate an output directory, default ./dist
@@ -35,32 +46,30 @@ Please read `CONTRIBUTING.md`
 
 ### Version option example
 
-`sitegen -v` or `sitegen --version` will display the tool name and current version.
+`osd-sitegen -v` or `osd-sitegen --version` will display the tool name and current version.
 
-```
-  Name:  sitegen
-  Version:  0.1.0
+```text
+  Name:  osd-sitegen
+  Version:  1.0.0
 ```
 
 ---
 
 ### Help option example
 
-`sitegen -h` or `sitegen --help` will list the tool options as listed above.
+`osd-sitegen -h` or `osd-sitegen --help` will list the tool options as listed above.
 
 ---
 
 ### Input option examples
 
-```
- sitegen -i filename
- sitegen --input "directory name"
- sitegen -i relative-or-absolute-path-to-file-or-directory
+```sh
+ osd-sitegen -i filename
+ osd-sitegen --input "directory name"
+ osd-sitegen -i relative-or-absolute-path-to-file-or-directory
 ```
 
 This is the main processing option for the site generator tool.
-
-The file or directory name must follow the input option.
 
 In the case of spaces in file or directory names, quotation marks "" are needed to wrap around the name.
 
@@ -77,15 +86,13 @@ Sample code for using output and stylesheet options below:
  sitegen -s "stylesheet url" -i filename -o relative-or-absolute-path-directory
 ```
 
-The order for using options doesn't matter, **but** the file, directory or url has to follow the used option.
-
-In the case that an output directory isn't indicated or valid, the generator will create files in a default ./dist folder in the current working directory.
+In the case that an output directory isn't indicated or valid, the generator will create files in a default `./dist` folder in the current working directory.
 
 ---
 
 ## Markdown
 
-The tool supports Markdown (.md) files with full Markdown support from Remarkable
+The tool supports Markdown (.md) files with full Markdown support from [Remarkable](https://github.com/jonschlinkert/remarkable)
 
 ---
 
@@ -96,11 +103,11 @@ The tool supports `.json` config file
 ### Usage
 
 ```sh
-sitegen -c config.json
+osd-sitegen -c config.json
 ```
 
-Reading and parsing json properties as options for `sitegen`
-**Note**: if `-c` exists, other options are be ignored.
+Reading and parsing json properties as options for `osd-sitegen`
+**Note**: if `-c` exists, other options will be ignored.
 
 ### Example.json
 
