@@ -1,4 +1,4 @@
-# SiteGen
+# OSD-SiteGen
 
 ## About
 
@@ -18,18 +18,25 @@ Current release 1.0.0 on npm with the following features.
 
 ## Development
 
-For interest in developments please read [`CONTRIBUTING.md`](./CONTRIBUTING.MD)
+For interest in developments please read [`CONTRIBUTING.md`](https://github.com/rclee91/SiteGen/blob/main/CONTRIBUTING.md)
 
 ## Installation
 
 1. Make sure you have [npm](https://www.npmjs.com/) installed
-2. run in terminal or command line
+2. Please make sure you have the latest version of [Node](https://nodejs.org/en/) ("v16.13.0")
+3. run the following in terminal or command line
 
 ```sh
 npm install -g osd-sitegen
 ```
 
 Head to any directory you wish for the default `/dist` folder to be generated in, then run the tool options below.
+
+To uninstall run
+
+```sh
+npm uninstall -g osd-sitegen
+```
 
 ## Tool options
 
